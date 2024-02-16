@@ -1,1 +1,1 @@
-export { default as CartIcon } from "./icon-cart.svg";
+export { default as CartIcon } from "./shopping-cart.svg";
