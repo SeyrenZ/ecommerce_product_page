@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import Image from "next/image";
 import { CartIcon } from "./svgs";
-import { useContext } from "react";
+import { useCart } from "./context/CartContext";
 
 const Product = () => {
   type Image = {
@@ -30,17 +30,26 @@ const Product = () => {
     },
   ];
 
-  const [quantity, setQuantity] = useState(0); // Set default value to 0
+  const [quantity, setQuantity] = useState(1); // Set default value to 0
 
   const incrementQuantity = () => {
     setQuantity(quantity + 1);
   };
 
   const decrementQuantity = () => {
-    if (quantity > 0) {
-      // Update condition to check if quantity is greater than 0
+    if (quantity > 1) {
       setQuantity(quantity - 1);
     }
+  };
+
+  const { addToCart } = useCart();
+
+  const product = {
+    name: "Fall Limited Edition Sneakers",
+    price: 125.0,
+    image: "/image-product-1.jpg",
+    quantity: quantity,
+    totalprice: quantity * 125.0,
   };
 
   return (
@@ -78,7 +87,7 @@ const Product = () => {
             SNEAKER COMPANY
           </div>
           <div className="text-5xl font-extrabold text-[#1d2025]">
-            Fall Limited Edition Sneakers
+            {product.name}
           </div>
         </div>
         <div className="flex flex-col gap-y-8">
@@ -90,7 +99,7 @@ const Product = () => {
           <div className="flex flex-col items-start gap-y-1.5">
             <div className="flex items-center gap-x-4">
               <div className="text-4xl font-extrabold text-[#1d2025]">
-                $125.00
+                ${product.price.toFixed(2)}
               </div>
               <div className="w-fit rounded-md bg-orange-500 bg-opacity-20 px-1.5 py-0.5">
                 <div className="font-bold text-md text-orange-500">50%</div>
@@ -115,7 +124,10 @@ const Product = () => {
               <AiOutlinePlus />
             </button>
           </div>
-          <button className="w-[310px] p-4 rounded-lg bg-orange-500 hover:bg-orange-400 flex items-center justify-center shadow-xl shadow-orange-200">
+          <button
+            className="w-[310px] p-4 rounded-lg bg-orange-500 hover:bg-orange-400 flex items-center justify-center shadow-xl shadow-orange-200"
+            onClick={() => addToCart(product)}
+          >
             <div className="flex items-center gap-x-4 text-white text-lg font-medium">
               <CartIcon /> Add to cart
             </div>

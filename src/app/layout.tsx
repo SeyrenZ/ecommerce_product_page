@@ -1,8 +1,9 @@
+" use client";
 import type { Metadata } from "next";
 import { Kumbh_Sans } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "./components";
-
+import { CartProvider } from "./components/context/CartContext";
 const KumbhSans = Kumbh_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -17,10 +18,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={KumbhSans.className}>
-        <Navbar />
-        {children}
-      </body>
+      <CartProvider>
+        <body className={KumbhSans.className}>
+          <Navbar />
+          {children}
+        </body>
+      </CartProvider>
     </html>
   );
 }
