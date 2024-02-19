@@ -12,6 +12,7 @@ interface Product {
 interface CartContextData {
   cart: Product[];
   addToCart: (product: Product) => void;
+  remChart: (productIndex: number) => void;
 }
 
 const CartContext = createContext<CartContextData | undefined>(undefined);
@@ -31,8 +32,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setCart((currentCart) => [...currentCart, product]);
   };
 
+  const remChart = (productIndex: number) => {
+    setCart((currentCart) => [
+      ...currentCart.slice(0, productIndex),
+      ...currentCart.slice(productIndex + 1),
+    ]);
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart }}>
+    <CartContext.Provider value={{ cart, addToCart, remChart }}>
       {children}
     </CartContext.Provider>
   );

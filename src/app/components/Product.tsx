@@ -30,7 +30,7 @@ const Product = () => {
     },
   ];
 
-  const [quantity, setQuantity] = useState(1); // Set default value to 0
+  const [quantity, setQuantity] = useState(1);
 
   const incrementQuantity = () => {
     setQuantity(quantity + 1);
@@ -125,7 +125,7 @@ const Product = () => {
             </button>
           </div>
           <button
-            className="w-[310px] p-4 rounded-lg bg-orange-500 hover:bg-orange-400 flex items-center justify-center shadow-xl shadow-orange-200"
+            className="w-[310px] p-4 rounded-lg bg-orange-500 hover:bg-orange-400 active:bg-orange-300 flex items-center justify-center shadow-xl shadow-orange-200"
             onClick={() => addToCart(product)}
           >
             <div className="flex items-center gap-x-4 text-white text-lg font-medium">
