@@ -139,9 +139,20 @@ const Navbar = () => {
                               {product.name}
                             </div>
                             <div className="text-[#68707d] text-md">
-                              ${product.price.toFixed(2)} x {product.quantity}{" "}
+                              $
+                              {(
+                                product.price *
+                                (product.discount / 100)
+                              ).toFixed(2)}{" "}
+                              x {product.quantity}
                               <span className="text-[#1d2025] font-extrabold text-md">
-                                ${(product.price * product.quantity).toFixed(2)}
+                                {" "}
+                                $
+                                {(
+                                  product.price *
+                                  (product.discount / 100) *
+                                  product.quantity
+                                ).toFixed(2)}{" "}
                               </span>
                             </div>
                           </div>

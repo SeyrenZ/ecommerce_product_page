@@ -1,26 +1,37 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { AiOutlineMinus, AiOutlinePlus, AiOutlineClose } from "react-icons/ai";
+import {
+  AiOutlineMinus,
+  AiOutlinePlus,
+  AiOutlineClose,
+  AiOutlineArrowLeft,
+  AiOutlineArrowRight,
+} from "react-icons/ai";
+
 import Image from "next/image";
 import { CartIcon } from "./svgs";
 import { useCart } from "./context/CartContext";
 import { fetchData } from "./utils/utils";
 
+// Define the Product type
 type ProductType = {
   name: string;
   price: number;
   image: string[];
   totalprice: number;
   quantity: number;
+  discount: number;
 };
 
 const Product = () => {
+  // Define state variables
   const [product, setProduct] = useState<ProductType | null>(null);
   const [selectedImage, setSelectedImage] = useState("");
   const [lightboxImage, setLightboxImage] = useState("");
   const [lightboxClicked, setLightboxClicked] = useState(false);
   const { addToCart } = useCart();
 
+  // Fetch data
   useEffect(() => {
     const fetchAndSetData = async () => {
       const data = await fetchData();
@@ -31,6 +42,7 @@ const Product = () => {
     fetchAndSetData();
   }, []);
 
+  // handle quantity
   const incrementQuantity = () => {
     setProduct((prevProduct) => ({
       ...prevProduct!,
@@ -47,6 +59,7 @@ const Product = () => {
     }
   };
 
+  // handle image selection
   const handleSelectImage = (image: string) => {
     if (lightboxClicked) {
       setLightboxImage(image);
@@ -55,6 +68,7 @@ const Product = () => {
     }
   };
 
+  // handle lightbox
   const handleLightbox = () => {
     setLightboxClicked(!lightboxClicked);
     if (!lightboxClicked) {
@@ -62,10 +76,24 @@ const Product = () => {
     }
   };
 
+  // handle image slider
+  const nextImage = () => {
+    const currentIndex = product?.image.indexOf(lightboxImage) as number;
+    const nextIndex = (currentIndex + 1) % (product?.image.length ?? 0);
+    setLightboxImage(product?.image[nextIndex]!);
+  };
+
+  const prevImage = () => {
+    const currentIndex = product?.image.indexOf(lightboxImage) as number;
+    const prevIndex =
+      (currentIndex - 1 + (product?.image.length ?? 0)) %
+      (product?.image.length ?? 0);
+    setLightboxImage(product?.image[prevIndex]!);
+  };
+
   return (
     <div className="w-full mx-auto max-w-[1280px] py-24 px-16 flex items-center justify-between relative  ">
       {/* Image */}
-
       <div className="flex flex-col gap-y-8">
         <Image
           className="rounded-xl"
@@ -98,22 +126,36 @@ const Product = () => {
         <>
           <div className="fixed inset-0 bg-black opacity-75 z-20"></div>
           <div className="flex flex-col items-center gap-y-8 absolute left-0 right-0 z-30">
-            <div className="flex flex-col first:items-end gap-y-4">
-              <AiOutlineClose
-                className="w-8 h-8"
-                fill="white"
-                onClick={handleLightbox}
-              />
-              <Image
-                className="flex rounded-xl"
-                src={lightboxImage}
-                width={700}
-                height={700}
-                alt="photo of product"
-              ></Image>
+            <div className="flex items-center justify-center relative z-0">
+              <button
+                className="bg-white mr-[-29px] rounded-full p-3 z-10"
+                onClick={prevImage}
+              >
+                <AiOutlineArrowLeft className="w-8 h-8" fill="#1d2025" />
+              </button>
+              <div className="flex flex-col items-end  gap-y-4">
+                <AiOutlineClose
+                  className="w-8 h-8"
+                  fill="white"
+                  onClick={handleLightbox}
+                />
+                <Image
+                  className="flex rounded-xl"
+                  src={lightboxImage}
+                  width={700}
+                  height={700}
+                  alt="photo of product"
+                ></Image>
+              </div>
+              <button
+                className="bg-white ml-[-29px] rounded-full p-3 z-10"
+                onClick={nextImage}
+              >
+                <AiOutlineArrowRight className="w-8 h-8" fill="#1d2025" />
+              </button>
             </div>
 
-            <div className="flex gap-x-5">
+            <div className="flex gap-x-8">
               {product?.image.map((image: any, index: number) => (
                 <div
                   key={index}
@@ -153,13 +195,21 @@ const Product = () => {
           <div className="flex flex-col items-start gap-y-1.5">
             <div className="flex items-center gap-x-4">
               <div className="text-4xl font-extrabold text-[#1d2025]">
-                ${product?.price.toFixed(2)}
+                $
+                {(
+                  (Number(product?.price) ?? 0) *
+                  ((product?.discount || 0) / 100)
+                ).toFixed(2)}
               </div>
               <div className="w-fit rounded-md bg-orange-500 bg-opacity-20 px-1.5 py-0.5">
-                <div className="font-bold text-md text-orange-500">50%</div>
+                <div className="font-bold text-md text-orange-500">
+                  {product?.discount}%
+                </div>
               </div>
             </div>
-            <div className="text-[#bebfc1] text-xl line-through">$250.00</div>
+            <div className="text-[#bebfc1] text-xl line-through">
+              ${product?.price?.toFixed(2) ?? "0.00"}
+            </div>
           </div>
         </div>
         <div className="flex items-center justify-between">

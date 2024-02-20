@@ -1,7 +1,7 @@
 
 {
     "name": "Fall Limited Edition Sneakers",
-    "price": 125.0,
+    "price": 250.0,
     "image": [
       "/image-product-1.jpg",
       "/image-product-2.jpg",
@@ -9,6 +9,6 @@
       "/image-product-4.jpg"
     ],
     "quantity": 1,
-    "totalprice": 125.0
+    "discount": 50
   }
   

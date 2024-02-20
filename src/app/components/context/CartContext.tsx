@@ -7,6 +7,7 @@ interface Product {
   price: number;
   totalprice: number;
   quantity: number;
+  discount: number;
 }
 
 interface CartContextData {
