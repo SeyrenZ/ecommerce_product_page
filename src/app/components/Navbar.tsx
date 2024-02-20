@@ -72,7 +72,7 @@ const Navbar = () => {
 
   // Render the Navbar component
   return (
-    <div className="w-full mx-auto max-w-[1280px] pt-8 pb-10 flex justify-between items-center border-b-[1px]">
+    <nav className="w-full mx-auto max-w-[1280px] pt-8 pb-10 flex justify-between items-center relative  border-b-[1px] z-10 ">
       <div className="flex items-center gap-x-12">
         <div className="text-3xl font-extrabold text-[#1d2025]">sneakers</div>
         <div className="flex gap-x-8">
@@ -128,7 +128,7 @@ const Navbar = () => {
                           {/* Render the product image */}
                           <Image
                             className="rounded-md"
-                            src={product.image}
+                            src={product.image[0]}
                             width={50}
                             height={50}
                             alt={product.name}
@@ -141,7 +141,7 @@ const Navbar = () => {
                             <div className="text-[#68707d] text-md">
                               ${product.price.toFixed(2)} x {product.quantity}{" "}
                               <span className="text-[#1d2025] font-extrabold text-md">
-                                ${product.totalprice.toFixed(2)}
+                                ${(product.price * product.quantity).toFixed(2)}
                               </span>
                             </div>
                           </div>
@@ -179,7 +179,7 @@ const Navbar = () => {
           />
         </div>
       </div>
-    </div>
+    </nav>
   );
 };
 

@@ -1,93 +1,147 @@
 "use client";
-import React, { useState } from "react";
-import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
+import React, { useState, useEffect } from "react";
+import { AiOutlineMinus, AiOutlinePlus, AiOutlineClose } from "react-icons/ai";
 import Image from "next/image";
 import { CartIcon } from "./svgs";
 import { useCart } from "./context/CartContext";
+import { fetchData } from "./utils/utils";
+
+type ProductType = {
+  name: string;
+  price: number;
+  image: string[];
+  totalprice: number;
+  quantity: number;
+};
 
 const Product = () => {
-  type Image = {
-    src: string;
-    alt: string;
-  };
+  const [product, setProduct] = useState<ProductType | null>(null);
+  const [selectedImage, setSelectedImage] = useState("");
+  const [lightboxImage, setLightboxImage] = useState("");
+  const [lightboxClicked, setLightboxClicked] = useState(false);
+  const { addToCart } = useCart();
 
-  const images: Image[] = [
-    {
-      src: "/image-product-1.jpg",
-      alt: "product",
-    },
-    {
-      src: "/image-product-2.jpg",
-      alt: "product",
-    },
-    {
-      src: "/image-product-3.jpg",
-      alt: "product",
-    },
-    {
-      src: "/image-product-4.jpg",
-      alt: "product",
-    },
-  ];
+  useEffect(() => {
+    const fetchAndSetData = async () => {
+      const data = await fetchData();
+      setProduct(data);
+      setSelectedImage(data.image[0]);
+    };
 
-  const [quantity, setQuantity] = useState(1);
+    fetchAndSetData();
+  }, []);
 
   const incrementQuantity = () => {
-    setQuantity(quantity + 1);
+    setProduct((prevProduct) => ({
+      ...prevProduct!,
+      quantity: (prevProduct?.quantity || 0) + 1,
+    }));
   };
 
   const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
+    if (product?.quantity && product.quantity > 1) {
+      setProduct((prevProduct) => ({
+        ...prevProduct!,
+        quantity: (prevProduct?.quantity || 0) - 1,
+      }));
     }
   };
 
-  const { addToCart } = useCart();
+  const handleSelectImage = (image: string) => {
+    if (lightboxClicked) {
+      setLightboxImage(image);
+    } else {
+      setSelectedImage(image);
+    }
+  };
 
-  const product = {
-    name: "Fall Limited Edition Sneakers",
-    price: 125.0,
-    image: "/image-product-1.jpg",
-    quantity: quantity,
-    totalprice: quantity * 125.0,
+  const handleLightbox = () => {
+    setLightboxClicked(!lightboxClicked);
+    if (!lightboxClicked) {
+      setLightboxImage(selectedImage);
+    }
   };
 
   return (
-    <div className="w-full mx-auto max-w-[1280px] py-24 px-16 flex items-center justify-between ">
+    <div className="w-full mx-auto max-w-[1280px] py-24 px-16 flex items-center justify-between relative  ">
       {/* Image */}
+
       <div className="flex flex-col gap-y-8">
         <Image
           className="rounded-xl"
-          src="/image-product-1.jpg"
+          src={selectedImage}
           width={500}
           height={500}
           alt="photo of product"
+          onClick={handleLightbox}
         ></Image>
         <div className="flex justify-between">
-          {images.map((image, index) => (
+          {product?.image.map((image: any, index: number) => (
             <div
               key={index}
               className="rounded-xl border-transparent border-4 hover:border-orange-500 inline-block"
+              onClick={() => handleSelectImage(image)} // Set selectedImage when the smaller image is clicked
             >
               <Image
                 className="rounded-lg hover:opacity-50"
-                src={image.src}
+                src={image}
                 width={100}
                 height={100}
-                alt={image.alt}
+                alt="photo of product"
               ></Image>
             </div>
           ))}
         </div>
       </div>
+      {/* show the lightbox when the product image is clicked */}
+      {lightboxClicked ? (
+        <>
+          <div className="fixed inset-0 bg-black opacity-75 z-20"></div>
+          <div className="flex flex-col items-center gap-y-8 absolute left-0 right-0 z-30">
+            <div className="flex flex-col first:items-end gap-y-4">
+              <AiOutlineClose
+                className="w-8 h-8"
+                fill="white"
+                onClick={handleLightbox}
+              />
+              <Image
+                className="flex rounded-xl"
+                src={lightboxImage}
+                width={700}
+                height={700}
+                alt="photo of product"
+              ></Image>
+            </div>
+
+            <div className="flex gap-x-5">
+              {product?.image.map((image: any, index: number) => (
+                <div
+                  key={index}
+                  className="rounded-xl border-transparent border-4 hover:border-orange-500 inline-block"
+                  onClick={() => handleSelectImage(image)} // Set selectedImage when the smaller image is clicked
+                >
+                  <Image
+                    className="rounded-lg hover:opacity-50"
+                    src={image}
+                    width={110}
+                    height={110}
+                    alt="photo of product"
+                  ></Image>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      ) : null}
+
       {/* Description */}
-      <div className="w-[500px] flex flex-col gap-y-10">
+      <div className="w-[500px] flex flex-col gap-y-10 relative z-0">
         <div className="flex flex-col gap-y-5">
           <div className="text-orange-500 font-semibold text-md tracking-widest">
             SNEAKER COMPANY
           </div>
           <div className="text-5xl font-extrabold text-[#1d2025]">
-            {product.name}
+            {product?.name}
           </div>
         </div>
         <div className="flex flex-col gap-y-8">
@@ -99,7 +153,7 @@ const Product = () => {
           <div className="flex flex-col items-start gap-y-1.5">
             <div className="flex items-center gap-x-4">
               <div className="text-4xl font-extrabold text-[#1d2025]">
-                ${product.price.toFixed(2)}
+                ${product?.price.toFixed(2)}
               </div>
               <div className="w-fit rounded-md bg-orange-500 bg-opacity-20 px-1.5 py-0.5">
                 <div className="font-bold text-md text-orange-500">50%</div>
@@ -116,7 +170,9 @@ const Product = () => {
             >
               <AiOutlineMinus />
             </button>
-            <div className="text-lg font-bold text-[#1d2025]">{quantity}</div>
+            <div className="text-lg font-bold text-[#1d2025]">
+              {product?.quantity}
+            </div>
             <button
               className="text-2xl font-extrabold text-[#ff7d1a]"
               onClick={incrementQuantity}
@@ -126,7 +182,7 @@ const Product = () => {
           </div>
           <button
             className="w-[310px] p-4 rounded-lg bg-orange-500 hover:bg-orange-400 active:bg-orange-300 flex items-center justify-center shadow-xl shadow-orange-200"
-            onClick={() => addToCart(product)}
+            onClick={() => addToCart(product!)}
           >
             <div className="flex items-center gap-x-4 text-white text-lg font-medium">
               <CartIcon /> Add to cart

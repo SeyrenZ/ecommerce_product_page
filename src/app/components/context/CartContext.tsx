@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from "react";
 import { useMemo } from "react";
 interface Product {
   name: string;
-  image: string;
+  image: string[];
   price: number;
   totalprice: number;
   quantity: number;
