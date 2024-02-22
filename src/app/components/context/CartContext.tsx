@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, useState } from "react";
-import { useMemo } from "react";
+
 interface Product {
   name: string;
   image: string[];

@@ -2,7 +2,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { CartIcon, DeleteIcon } from "./svgs";
+import { CartIcon, DeleteIcon, LogoIcon, MenuIcon } from "./svgs";
 import Image from "next/image";
 import { useCart } from "./context/CartContext";
 
@@ -72,10 +72,11 @@ const Navbar = () => {
 
   // Render the Navbar component
   return (
-    <nav className="w-full mx-auto max-w-[1280px] pt-8 pb-10 flex justify-between items-center relative  border-b-[1px] z-10 ">
-      <div className="flex items-center gap-x-12">
-        <div className="text-3xl font-extrabold text-[#1d2025]">sneakers</div>
-        <div className="flex gap-x-8">
+    <nav className="w-full mx-auto max-w-[1280px] px-10 sm:px-6 xl:px-0 lg:py-8 sm:py-3 py-6 flex  justify-between items-center relative  border-b-[1px] z-10 ">
+      <div className="flex items-center lg:gap-x-12 gap-x-4">
+        <MenuIcon className="lg:hidden md:block" />
+        <LogoIcon />
+        <div className="lg:flex gap-x-8 hidden">
           {/* Render the links */}
           {links.map((link, index) => (
             <Link
@@ -88,11 +89,11 @@ const Navbar = () => {
           ))}
         </div>
       </div>
-      <div className="flex gap-x-10 items-center">
-        <div className="relative" onClick={toggleMenu}>
+      <div className="flex gap-x-10 sm:gap-x-5 items-center">
+        <div className="relative">
           {/* Render the CartIcon */}
           <div className="flex relative">
-            <CartIcon />
+            <CartIcon onClick={toggleMenu} />
             {/* Show the number of items in the cart */}
             {isCartEmpty ? null : (
               <div className="ml-3 mt-[-5px] w-fit px-2 absolute bg-orange-500 rounded-md text-[10px] text-white flex items-center justify-center">
@@ -104,7 +105,7 @@ const Navbar = () => {
           {isMenuOpen && (
             <div
               ref={menuRef}
-              className="w-[400px] max-h-[400px] absolute top-14 right-[-185px] rounded-lg bg-white shadow-2xl flex flex-col "
+              className="w-[400px] max-h-[400px] sm:w-[350px] sm:max-h-[350px] absolute top-14  right-[-90px] 2xl:right-[-185px] lg:right-[-70px] sm:right-[-60px] rounded-lg bg-white shadow-2xl flex flex-col "
               onClick={handleMenuClick}
             >
               {/* Render the menu content */}
@@ -114,7 +115,7 @@ const Navbar = () => {
               <div className="p-5 flex flex-col gap-y-5 overflow-scroll overflow-x-hidden ">
                 {/* Render the cart items */}
                 {isCartEmpty ? (
-                  <div className="py-32 text-[#68707d] text-lg font-bold flex justify-center items-center">
+                  <div className="py-32 sm:py-24 text-[#68707d] text-lg font-bold flex justify-center items-center">
                     Your cart is empty.
                   </div>
                 ) : (
@@ -179,7 +180,7 @@ const Navbar = () => {
             </div>
           )}
         </div>
-        <div className="rounded-full border-transparent border-[3px] hover:border-orange-500 hover:cursor-pointer">
+        <div className="sm:w-10 rounded-full border-transparent border-[3px] hover:border-orange-500 hover:cursor-pointer">
           {/* Render the profile image */}
           <Image
             className="select-none"

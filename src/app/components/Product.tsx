@@ -27,6 +27,7 @@ const Product = () => {
   // Define state variables
   const [product, setProduct] = useState<ProductType | null>(null);
   const [selectedImage, setSelectedImage] = useState("");
+
   const [lightboxImage, setLightboxImage] = useState("");
   const [lightboxClicked, setLightboxClicked] = useState(false);
   const { addToCart } = useCart();
@@ -70,9 +71,12 @@ const Product = () => {
 
   // handle lightbox
   const handleLightbox = () => {
-    setLightboxClicked(!lightboxClicked);
-    if (!lightboxClicked) {
-      setLightboxImage(selectedImage);
+    if (window.innerWidth > 640) {
+      // 768px is typically the breakpoint for small screens
+      setLightboxClicked(!lightboxClicked);
+      if (!lightboxClicked) {
+        setLightboxImage(selectedImage);
+      }
     }
   };
 
@@ -91,19 +95,48 @@ const Product = () => {
     setLightboxImage(product?.image[prevIndex]!);
   };
 
+  const mobileNextImage = () => {
+    const currentIndex = product?.image.indexOf(selectedImage) as number;
+    const nextIndex = (currentIndex + 1) % (product?.image.length ?? 0);
+    setSelectedImage(product?.image[nextIndex]!);
+  };
+
+  const mobilePrevImage = () => {
+    const currentIndex = product?.image.indexOf(selectedImage) as number;
+    const prevIndex =
+      (currentIndex - 1 + (product?.image.length ?? 0)) %
+      (product?.image.length ?? 0);
+    setSelectedImage(product?.image[prevIndex]!);
+  };
+
   return (
-    <div className="w-full mx-auto max-w-[1280px] py-24 px-16 flex items-center justify-between relative  ">
+    <div className="w-full mx-auto max-w-[1280px] lg:py-24 py-20 sm:py-0 sm:pb-10 px-16 sm:px-0 flex flex-col xl:flex-row  items-center justify-between relative xl:gap-y-0 gap-y-10  ">
       {/* Image */}
       <div className="flex flex-col gap-y-8">
-        <Image
-          className="rounded-xl"
-          src={selectedImage}
-          width={500}
-          height={500}
-          alt="photo of product"
-          onClick={handleLightbox}
-        ></Image>
-        <div className="flex justify-between">
+        <div className="flex items-center justify-center relative">
+          <button
+            className="bg-white left-5 rounded-full p-2 hidden absolute sm:block "
+            onClick={mobilePrevImage}
+          >
+            <AiOutlineArrowLeft className="w-6 h-6" fill="#1d2025" />
+          </button>
+          <Image
+            className="rounded-xl sm:rounded-none sm:h-[360px] object-cover"
+            src={selectedImage}
+            width={500}
+            height={500}
+            alt="photo of product"
+            onClick={handleLightbox}
+          ></Image>
+          <button
+            className="bg-white right-5 rounded-full p-2 absolute hidden sm:block "
+            onClick={mobileNextImage}
+          >
+            <AiOutlineArrowRight className="w-6 h-6" fill="#1d2025" />
+          </button>
+        </div>
+
+        <div className="flex justify-between sm:hidden ">
           {product?.image.map((image: any, index: number) => (
             <div
               key={index}
@@ -177,24 +210,24 @@ const Product = () => {
       ) : null}
 
       {/* Description */}
-      <div className="w-[500px] flex flex-col gap-y-10 relative z-0">
-        <div className="flex flex-col gap-y-5">
-          <div className="text-orange-500 font-semibold text-md tracking-widest">
+      <div className="w-[500px] sm:w-[390px] sm:px-5 flex flex-col gap-y-10 sm:gap-y-4 relative z-0">
+        <div className="flex flex-col gap-y-5 sm:gap-y-3">
+          <div className="text-orange-500 font-semibold text-md sm:text-sm tracking-widest">
             SNEAKER COMPANY
           </div>
-          <div className="text-5xl font-extrabold text-[#1d2025]">
+          <div className="text-5xl sm:text-3xl font-extrabold text-[#1d2025]">
             {product?.name}
           </div>
         </div>
         <div className="flex flex-col gap-y-8">
-          <div className="text-[#68707d] text-lg">
+          <div className="text-[#68707d] text-lg sm:text-md">
             These low-profile sneakers are your perfect casual wear companion.
             Featuring a durable rubber outer sole, they’ll
             <br /> withstand everything the weather can offer.
           </div>
-          <div className="flex flex-col items-start gap-y-1.5">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-y-1.5">
             <div className="flex items-center gap-x-4">
-              <div className="text-4xl font-extrabold text-[#1d2025]">
+              <div className="text-4xl sm:text-3xl font-extrabold text-[#1d2025]">
                 $
                 {(
                   (Number(product?.price) ?? 0) *
@@ -212,8 +245,8 @@ const Product = () => {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="w-44 px-3 py-4 rounded-lg bg-[#f7f8fd] flex items-center justify-between">
+        <div className="sm:mt-3 flex sm:flex-col items-center justify-between sm:gap-y-5">
+          <div className="w-44 sm:w-full px-3 py-4 rounded-lg bg-[#f7f8fd] flex items-center justify-between">
             <button
               className="text-2xl font-bold text-[#ff7d1a] "
               onClick={decrementQuantity}
@@ -231,7 +264,7 @@ const Product = () => {
             </button>
           </div>
           <button
-            className="w-[310px] p-4 rounded-lg bg-orange-500 hover:bg-orange-400 active:bg-orange-300 flex items-center justify-center shadow-xl shadow-orange-200"
+            className="w-[310px] sm:w-full p-4 rounded-lg bg-orange-500 hover:bg-orange-400 active:bg-orange-300 flex items-center justify-center shadow-xl shadow-orange-200"
             onClick={() => addToCart(product!)}
           >
             <div className="flex items-center gap-x-4 text-white text-lg font-medium">
