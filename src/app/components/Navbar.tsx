@@ -79,9 +79,8 @@ const Navbar = () => {
   return (
     <nav className="w-full mx-auto max-w-[1280px] px-10 sm:px-6 xl:px-0 lg:py-8 sm:py-3 py-6 flex  justify-between items-center relative border-b-[1px] z-10 ">
       <div className="flex items-center md:gap-x-12 gap-x-4">
-        {isMenuOpen ? (
-          <MenuIcon className="md:hidden sm:block" onClick={toggleMenu} />
-        ) : (
+        <MenuIcon className="md:hidden sm:block" onClick={toggleMenu} />
+        {isMenuOpen && (
           <>
             <div className="fixed inset-0 bg-black opacity-75 z-20 hidden sm:block"></div>
             <div className="lg:hidden sm:block flex flex-col absolute w-[300px] h-[100vh] left-0 top-0 bg-white z-30 ">
