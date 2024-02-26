@@ -2,7 +2,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { CartIcon, DeleteIcon, LogoIcon, MenuIcon } from "./svgs";
+import { CartIcon, DeleteIcon, LogoIcon, MenuIcon, CloseIcon } from "./svgs";
 import Image from "next/image";
 import { useCart } from "./context/CartContext";
 
@@ -39,11 +39,16 @@ const Navbar = () => {
   ];
 
   // Define state variables
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cart, remChart } = useCart();
   const menuRef = useRef<HTMLDivElement | null>(null);
 
-  // Toggle the menu
+  // Toggle the Cart menu
+  const toggleCart = (e: any) => {
+    setIsCartOpen(!isCartOpen);
+  };
+  // Toggle Hamburger Menu
   const toggleMenu = (e: any) => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -60,7 +65,7 @@ const Navbar = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsMenuOpen(false);
+        setIsCartOpen(false);
       }
     };
 
@@ -72,11 +77,32 @@ const Navbar = () => {
 
   // Render the Navbar component
   return (
-    <nav className="w-full mx-auto max-w-[1280px] px-10 sm:px-6 xl:px-0 lg:py-8 sm:py-3 py-6 flex  justify-between items-center relative  border-b-[1px] z-10 ">
-      <div className="flex items-center lg:gap-x-12 gap-x-4">
-        <MenuIcon className="lg:hidden md:block" />
-        <LogoIcon />
-        <div className="lg:flex gap-x-8 hidden">
+    <nav className="w-full mx-auto max-w-[1280px] px-10 sm:px-6 xl:px-0 lg:py-8 sm:py-3 py-6 flex  justify-between items-center relative border-b-[1px] z-10 ">
+      <div className="flex items-center md:gap-x-12 gap-x-4">
+        {isMenuOpen ? (
+          <MenuIcon className="md:hidden sm:block" onClick={toggleMenu} />
+        ) : (
+          <>
+            <div className="fixed inset-0 bg-black opacity-75 z-20"></div>
+            <div className="lg:hidden sm:block flex flex-col absolute w-[300px] h-[100vh] left-0 top-0 bg-white z-30 ">
+              <div className="flex flex-col px-5 py-6 gap-y-8 ">
+                <CloseIcon className="ml-1" onClick={toggleMenu} />
+                {/* Render the links */}
+                {links.map((link, index) => (
+                  <Link
+                    key={index}
+                    href={link.url}
+                    className="text-xl text-[#1d2025] font-bold hover:text-orange-500"
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+        <LogoIcon className="" />
+        <div className="md:flex gap-x-8 hidden">
           {/* Render the links */}
           {links.map((link, index) => (
             <Link
@@ -89,11 +115,12 @@ const Navbar = () => {
           ))}
         </div>
       </div>
+
       <div className="flex gap-x-10 sm:gap-x-5 items-center">
         <div className="relative">
           {/* Render the CartIcon */}
           <div className="flex relative">
-            <CartIcon onClick={toggleMenu} />
+            <CartIcon onClick={toggleCart} />
             {/* Show the number of items in the cart */}
             {isCartEmpty ? null : (
               <div className="ml-3 mt-[-5px] w-fit px-2 absolute bg-orange-500 rounded-md text-[10px] text-white flex items-center justify-center">
@@ -102,7 +129,7 @@ const Navbar = () => {
             )}
           </div>
 
-          {isMenuOpen && (
+          {isCartOpen && (
             <div
               ref={menuRef}
               className="w-[400px] max-h-[400px] sm:w-[350px] sm:max-h-[350px] absolute top-14  right-[-90px] 2xl:right-[-185px] lg:right-[-70px] sm:right-[-60px] rounded-lg bg-white shadow-2xl flex flex-col "
