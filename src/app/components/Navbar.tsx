@@ -83,7 +83,7 @@ const Navbar = () => {
           <MenuIcon className="md:hidden sm:block" onClick={toggleMenu} />
         ) : (
           <>
-            <div className="fixed inset-0 bg-black opacity-75 z-20"></div>
+            <div className="fixed inset-0 bg-black opacity-75 z-20 hidden sm:block"></div>
             <div className="lg:hidden sm:block flex flex-col absolute w-[300px] h-[100vh] left-0 top-0 bg-white z-30 ">
               <div className="flex flex-col px-5 py-6 gap-y-8 ">
                 <CloseIcon className="ml-1" onClick={toggleMenu} />
