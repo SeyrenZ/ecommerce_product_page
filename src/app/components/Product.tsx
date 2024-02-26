@@ -157,8 +157,8 @@ const Product = () => {
       {/* show the lightbox when the product image is clicked */}
       {lightboxClicked ? (
         <>
-          <div className="fixed inset-0 bg-black opacity-75 z-20"></div>
-          <div className="flex flex-col items-center gap-y-8 absolute left-0 right-0 z-30">
+          <div className="fixed inset-0 bg-black opacity-75 z-20 block sm:hidden"></div>
+          <div className="flex flex-col items-center gap-y-8 absolute left-0 right-0 z-30 block sm:hidden">
             <div className="flex items-center justify-center relative z-0">
               <button
                 className="bg-white mr-[-29px] rounded-full p-3 z-10"
